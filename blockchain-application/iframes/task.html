@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+        }
+
+        #toastArea {
+            position: absolute;
+            top: 1%;
+            right: 1%;
+        }
+
+        .toast {
+            background-color: rgba(255, 255, 255, .85);
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: .25rem;
+            border-left: 3px solid #3f6ad8;
+            width: 20rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: glow-blue 1.5s infinite ease-in-out !important;
+        }
+
+        .toast.success {
+            border-left: 3px solid #31a66a;
+            animation: glow-green 1.5s infinite ease-in-out !important;
+        }
+
+        .toast.danger {
+            border-left: 3px solid #b81f44;
+            animation: glow-red 1.5s infinite ease-in-out !important;
+        }
+
+        @-webkit-keyframes glow-red {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(255, 50, 50, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(255, 50, 50, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(255, 50, 50, 0.9);
+            }
+        }
+
+        @keyframes glow-red {
+            0% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, 0.9);
+            }
+        }
+
+        @-webkit-keyframes glow-green {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 230, 50, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(50, 230, 50, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 230, 50, 0.9);
+            }
+        }
+
+        @keyframes glow-green {
+            0% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, 0.9);
+            }
+        }
+
+        @-webkit-keyframes glow-blue {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 50, 255, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(50, 50, 255, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 50, 255, 0.9);
+            }
+        }
+
+        @keyframes glow-blue {
+            0% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, 0.9);
+            }
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadein 0.5s;
+        }
+
+        .toast .toast-head {
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding: .25rem .75rem;
+            color: #6c757d;
+            background-color: rgba(255, 255, 255, .85);
+            background-clip: padding-box;
+            border-bottom: 1px solid rgba(0, 0, 0, .05);
+            position: relative;
+        }
+
+        .toast .toast-head button {
+            position: absolute;
+            right: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .toast .toast-body {
+            padding: 0.75rem;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                margin-bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                margin-bottom: 1rem;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                margin-bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                margin-bottom: 1rem;
+                opacity: 1;
+            }
+        }
+
+        #dis {
+            border: 1px solid #444;
+        }
+
+        .butt {
+            background: lightskyblue;
+            color: #fff;
+            padding: 0.8rem 1.7rem;
+            overflow: hidden;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 15px;
+            margin-right: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .butt:hover {
+            background: #3dbeff;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .words {
+            background: #fed86f;
+            color: #963;
+            padding: 1rem;
+            font-family: sans-serif;
+            user-select: none;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 50%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .words div {
+            padding: 1rem 2rem;
+            display: block;
+            width: 100%;
+            border: 1px solid #963;
+            box-sizing: border-box;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .words div:hover {
+            box-shadow: 0 2px 6px rgb(219, 133, 47);
+            color: rgb(219, 133, 47);
+        }
+
+        .words div.disabled {
+            background: #aaaaaa88;
+            pointer-events: none;
+        }
+
+        .fib {
+            background:#fff;
+            padding: 1rem;
+            width: 100%;
+            font-family: sans-serif;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .blank {
+            min-width: 3rem;
+            text-align: center;
+            display: inline-block;
+            border-bottom: 1px solid #444;
+        }
+
+        .sentence {
+            padding: 1rem 2rem;
+            border: 1px solid #888;
+            padding-right: 6rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .sentence:after {
+            content: "\25bc";
+            position: absolute;
+            bottom: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sentence:nth-last-child(1):after {
+            content: "";
+        }
+
+        .sentence.wrong {
+            border: 2px solid red;
+        }
+
+        .sentence .butArea {
+            position: absolute;
+            right: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .sentence button {
+            background: #444;
+            color: #fff;
+            border: none;
+            outline: none;
+            padding: 0.5rem 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #444;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .sentence .hash {
+            background: #fed86f;
+            color: #963;
+            padding: 0 0.5rem;
+        }
+
+        .sentence .ph {
+            background: rgb(119, 211, 247);
+            color: #00027e;
+            padding: 0 0.5rem;
+        }
+
+        .sentence button:hover {
+            background: #fed86f;
+            color: #963;
+        }
+
+        .wrapper {
+            display: flex;
+            margin-top: 1.5rem;
+        }
+    </style>
+    <h3 style="font-family: sans-serif;">Arrange the blocks in the correct order</h3>
+    The hash of the current block should match the previous hash of the next block for a valid chain.
+    <br />
+    Use the buttons on the side of each block to change their order.
+    <br />
+    <div class="wrapper">
+        <div class="fib" id="psuedo">
+        </div>
+    </div>
+    <br />
+    <button class="butt" onclick="validate()">Validate</button>
+    <button class="butt" onclick="hint()">Hint</button>
+    <div id="toastArea"></div>
+    <script>
+        var psArea = document.getElementById("psuedo"), codeQ = document.getElementsByClassName("wrd");
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast${tc}" id="t${tos}">
+    <div class="toast-head">
+        <b>#${tos + 1}</b>&nbsp;Notification
+        <button class="toast-but" data-ind="${tos}">&#10006;</button>
+    </div>
+    <div class="toast-body">
+        ${msg}
+    </div>
+    </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+
+        let blks = [
+            { hash: "555", ph: "" },
+            { hash: "zxc", ph: "555" },
+            { hash: "iop", ph: "zxc" },
+            { hash: "abc", ph: "iop" },
+            { hash: "jhy", ph: "abc" },
+            { hash: "plk", ph: "jhy" }
+        ]
+        let ans = [4, 2, 1, 0, 5, 3];
+        let correct = [0, 1, 2, 3, 4, 5];
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (!e.className)
+                return;
+            else if (e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+            else if (e.className.indexOf('upBut') != -1) {
+                let i = parseInt(e.getAttribute('data-ind'));
+                if (i == 0) return;
+                var temp;
+                temp = ans[i];
+                ans[i] = ans[i - 1];
+                ans[i - 1] = temp;
+                renderPsArea();
+            }
+            else if (e.className.indexOf('downBut') != -1) {
+                let i = parseInt(e.getAttribute('data-ind'));
+                if (i == ans.length - 1) return;
+                var temp;
+                temp = ans[i];
+                ans[i] = ans[i + 1];
+                ans[i + 1] = temp;
+                renderPsArea();
+            }
+        }
+        function validate() {
+            if (ans.length === correct.length && ans.every(function (value, index) { return value === correct[index] }))
+                malert("Correct!", 1);
+            else
+                malert("Wrong, click on the hint button to get a hint", 2);
+        }
+        function getPsAreaBlock(index, indexInAns) {
+            return `<div class="sentence">
+                Hash: <span class="hash">${blks[index].hash}</span><br>
+                Previous hash: <span class="ph">${blks[index].ph}</span>
+                <div class="butArea">                    
+                    <button data-ind="${indexInAns}" class="upBut">&#x2191;</button>
+                    <button data-ind="${indexInAns}" class="downBut">&#x2193;</button>
+                </div>
+                </div>`;
+        }
+        function renderPsArea() {
+            var res = "";
+            for (let i = 0; i < ans.length; i++) {
+                res += getPsAreaBlock(ans[i], i);
+            }
+            if (ans.length == 0) res = "Click on a code block to add it here.";
+            psArea.innerHTML = res;
+        }
+        function hint() {
+            malert("The block with no previous hash is the first block, also called Genisis block.")
+        }
+        renderPsArea();
+    </script>
+</body>
+
+</html>

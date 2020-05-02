@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <title>Document</title>
+</head>
+<style>
+    #btn_class {
+        font-weight: bold;
+        padding: 0.5rem;
+        position: absolute;
+        top: 1%;
+        right: 1%;
+        background-color: #154360;
+        border: none;
+        color: white;
+        /* padding: 13px 30px; */
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        display: inline-block;
+        cursor: pointer;
+        margin-top: 1rem;
+        /* margin-top: 1%; */
+    }
+
+    .wrapper {
+        width: 100%;
+        height: 100%;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin-top: 1rem;
+    }
+
+    body {
+        font-family: sans-serif;
+    }
+</style>
+
+<body>
+    <!--======================Frame 1st=====================================-->
+    <br />
+    <br /><br />
+    <div class="wrapper">
+        <iframe style="height:1700px" frameborder="0" src="iframes/matching.html" id="myframe"></iframe>
+    </div>
+
+    <button id="btn_class" onclick="changeiframe()">
+        Initiate Mining Process
+    </button>
+    <script>
+        /*function getDocHeight(doc) {
+            doc = doc || document;
+            // stackoverflow.com/questions/1145850/
+            var body = doc.body, html = doc.documentElement;
+            var height = Math.max(body.scrollHeight, body.offsetHeight,
+                html.clientHeight, html.scrollHeight, html.offsetHeight);
+            return height;
+        }
+        function setIframeHeight(id) {
+            var ifrm = document.getElementById(id);
+            var doc = ifrm.contentDocument ? ifrm.contentDocument :
+                ifrm.contentWindow.document;
+            ifrm.style.visibility = 'hidden';
+            ifrm.style.height = "10px"; // reset to minimal height ...
+            // IE opt. for bing/msn needs a bit added or scrollbar appears
+            ifrm.style.height = getDocHeight(doc) + 4 + "px";
+            ifrm.style.visibility = 'visible';
+        }
+
+        document.getElementById('myframe').onload = function () { // Adjust the Id accordingly
+            setIframeHeight(this.id);
+        }*/
+        let c = 0;
+        function changeiframe() {
+            if (c == 1) return;
+            document.getElementById("myframe").contentWindow.location.replace("iframes/mining.html");
+            // document.getElementById("myframe").src = "iframes/mining.html";
+            document.getElementById("btn_class").innerHTML = "End of experiment";
+            c++;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>Document</title>
+</head>
+<style>
+    #btn_class {
+        font-weight: bold;
+        position: absolute;
+        top: 1%;
+        right: 1%;
+        padding: 0.5rem;
+        background-color: #154360;
+        border: none;
+        color: white;
+        /* padding: 13px 30px; */
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 1rem;
+        cursor: pointer;
+        /* margin-top: 1%; */
+    }
+
+    .wrapper {
+        width: 100%;
+        height: 100%;
+        margin-top:2rem;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin-top: 1rem;
+    }
+</style>
+
+<body>
+    <!--======================Frame 1st=====================================-->
+    <br />
+    <div class="wrapper">
+        <iframe frameborder="0" style="height:1800px" src="iframes/psuedo_code.html" id="myframe"></iframe>
+    </div>
+
+    <button id="btn_class" onclick="changeiframe()">
+        Initiate Smart Contract Experiment
+    </button>
+    <script>
+        /*  function getDocHeight(doc) {
+              doc = doc || document;
+              // stackoverflow.com/questions/1145850/
+              var body = doc.body, html = doc.documentElement;
+              var height = Math.max(body.scrollHeight, body.offsetHeight,
+                  html.clientHeight, html.scrollHeight, html.offsetHeight);
+              return height;
+          }
+          function setIframeHeight(id) {
+              var ifrm = document.getElementById(id);
+              var doc = ifrm.contentDocument ? ifrm.contentDocument :
+                  ifrm.contentWindow.document;
+              ifrm.style.visibility = 'hidden';
+              ifrm.style.height = "10px"; // reset to minimal height ...
+              // IE opt. for bing/msn needs a bit added or scrollbar appears
+              ifrm.style.height = getDocHeight(doc) + 4 + "px";
+              ifrm.style.visibility = 'visible';
+              console.log(getDocHeight(doc));
+          }
+  
+          document.getElementById('myframe').onload = function () { // Adjust the Id accordingly
+              setIframeHeight(this.id);
+          }*/
+        let ar = [
+            ["iframes/smart.html", "End of experiment"]
+        ];
+        let c = 0;
+        function changeiframe() {
+            if (c == ar.length) return;
+            document.getElementById("myframe").contentWindow.location.replace(ar[c][0]);
+            //document.getElementById("myframe").src = ;
+            document.getElementById("btn_class").innerHTML = ar[c][1];
+            c++;
+
+        }
+    </script>
+</body>
+
+</html>

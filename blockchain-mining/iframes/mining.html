@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+
+<body>
+    <style>
+        #dis {
+            border: 1px solid #444;
+        }
+
+        .butt {
+            background: lightskyblue;
+            color: #fff;
+            padding: 0.8rem 1.7rem;
+            overflow: hidden;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 15px;
+            margin-right: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .butt:hover {
+            background: #3dbeff;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .butt.green {
+            background: lightgreen;
+        }
+
+        .butt.green:hover {
+            background: green;
+        }
+
+        .butt.red {
+            background: lightcoral;
+        }
+
+        .butt.red:hover {
+            background: red;
+        }
+
+        .instruct b {
+            font-size: 19px;
+            color: #3498DB
+        }
+
+        .h2tag {
+            color: #EC7063;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .cont {
+            display: flex;
+            /* flex-wrap: wrap; */
+            justify-content: center;
+        }
+    </style>
+    <h2 class="h2tag">Mining Process</h2>
+    <div class="cont">
+        <div id="actions" class="instruct" style="padding-right:1rem;">
+            <h2><strong>&nbsp;Instructions:</strong></h2>
+            <!-- write the instructions here  -->
+            <b>1. Enter the name of User-A(Sender) and<br>User-B(Reciever) to send transaction.</b><br><br>
+            <b>2. Now click on the button "ADD TO BLOCK". </b><br><br>
+            <b>3. The details you entered will appear on the block. </b><br><br>
+            <b>4. Now click on the button "START MINING<br>PROCESS". </b><br><br>
+            <b>5.Mining process will start. Miner A,Miner B and<br>Miner C will start calculating the proper
+                Hash .
+            </b><br><br>
+            <b>6.One of the miner completes the mining process<br>and other miners confirm the hash calculated.
+            </b><br><br>
+            <b>7. Click on "RESET" button to do the experiment<br> again.</b> <br>
+            <b>Algorithm used</b><br><br>
+            <img style="max-width:90%" src=".././images/sha-256.png" alt="#####" />
+            <br />
+            <h3>ECDSA(Elliptic Curve Digital Signature Algorithm)</h3>
+            <img style="max-width:90%" src=".././images/es.png" alt="#####" />
+        </div>
+        <div id="targz" style="text-align: center;padding-top:1rem;position: relative;">
+
+            <input type="text" id="from" placeholder="From" />
+            <input type="text" id="to" placeholder="To" />
+            <input type="number" id="amt" placeholder="Amount" />
+            <br /><br />
+            <button class="butt" id="addBut" onclick="addToBlock()">Add to block</button>
+            <button class="butt green" id="mineBut" onclick="mine()">Start mining process</button>
+            <button class="butt red" id="resetBut" onclick="reset()">Reset</button>
+            <br /><br />
+            <canvas id="dis" width="690" height="1000"></canvas>
+        </div>
+    </div>
+
+    <div id="toastArea">
+
+    </div>
+
+    <br />
+
+
+    <script src="../js/animation.ob.js"> </script>
+    <script>
+        //@author: Simran Singh (simran.singh2198@gmail.com)
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+
+
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast${tc}" id="t${tos}">
+            <div class="toast-head">
+                <b>#${tos + 1}</b>&nbsp;Notification
+                <button class="toast-but" data-ind="${tos}">&#10006;</button>
+            </div>
+            <div class="toast-body">
+                ${msg}
+            </div>
+            </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (e.className && e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+
+
+        const BLOCK_WIDTH = 150;
+        class Trans {
+            //transactions class
+            constructor(from, to, amount) {
+                Object.assign(this, { from, to, amount });
+            }
+        }
+        class Block {
+            //blocks class
+            constructor(x, y, w, h, name, transacs = [], prevHash = '', hash = '') {
+                // transacs = array of transactions in the block, each item in array is object of class Trans               
+                Object.assign(this, { x, y, h, w, name, transacs, prevHash, hash });
+            }
+        }
+        class Node {
+            //you can also call this miner
+            constructor(x, y, w, h, name, blocks, status = "Idle") {
+                Object.assign(this, { x, y, w, h, name, blocks, status });
+            }
+        }
+        function randString(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+        var anim = new Animation("dis");
+        var canvas = anim.getCanvas();
+        var ctx = anim.getContext();
+        anim.setStage(animFrame);
+        function renderBlock(b, active = 0) {
+            let h = b.transacs.length ? b.transacs.length * 20 + 70 : b.h; // modifying height according to number of transactions in the block
+            if (active) ctx.strokeStyle = "#00FF00";
+            ctx.rect(b.x, b.y, b.w, h);//block box
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.strokeStyle = "#000000";
+            //block name: "Block A"
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(b.name, b.x + (b.w / 2), b.y + 10);
+            //Hash:
+            ctx.fillStyle = "#0000ff";
+            ctx.fillText('Prev Hash: ' + b.prevHash, b.x + (b.w / 2), b.y + 30);
+            ctx.fillText('Hash: ' + b.hash, b.x + (b.w / 2), b.y + h - 10);
+            //line below "Block A"
+            ctx.moveTo(b.x, b.y + 17, 0);
+            ctx.lineTo(b.x + b.w, b.y + 17);
+            //font settings of transactions
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#ff0000";
+            for (let i = 0; i < b.transacs.length; i++) {
+                let t = b.transacs[i];
+                ctx.fillText(t.from + "  -> " + t.to + "  Amt: " + t.amount, b.x + (b.w / 2), b.y + (i * 20) + 55);//writing transactions position calculated according to blocks x,y
+            }
+            ctx.stroke();
+        }
+        function renderNode(n) {
+            ctx.beginPath();
+            ctx.rect(n.x, n.y, n.w, n.h);//the main box of node
+            //name of node: "Node A"
+            ctx.font = "20px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(n.name, n.x + (n.w / 2), n.y + 15);
+            ctx.fillStyle = n.status.startsWith("Mined") ? "#ff0000" : "#ff00ff";
+            ctx.fillText("Status: " + n.status, n.x + (n.w / 2), n.y + 45);
+            //the line under "Node A"
+            ctx.moveTo(n.x, n.y + 27, 0);
+            ctx.lineTo(n.x + n.w, n.y + 27);
+            for (let i = 0; i < n.blocks.length; i++) {
+                //looping through blocks in the node
+                //manipulating block position in each node:
+                n.blocks[i].x = n.x + 10 + i * (BLOCK_WIDTH + 10);
+                n.blocks[i].y = n.y + 65;
+                renderBlock(n.blocks[i]);
+            }
+            ctx.stroke();
+            ctx.closePath();
+        }
+        // ================================== YOU JUST NEED TO LOOK AT THIS CODE =========================================
+        let active = -1;
+        let t = [
+            new Trans("A", "B", 10),
+            new Trans("B", "C", 20),
+            new Trans("B", "C", 20),
+        ];
+        let nodes = [
+            new Node(25, 200, (BLOCK_WIDTH * 4) + 40, 240, "Miner A", []),
+            new Node(25, 460, (BLOCK_WIDTH * 4) + 40, 240, "Miner B", []),
+            new Node(25, 720, (BLOCK_WIDTH * 4) + 40, 240, "Miner C", [])
+        ];
+        var curBlock = new Block(250, 10, BLOCK_WIDTH + 40, 70, "Block to be Added", []);
+        function renderScene() {
+            //render whole scene
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // lets clear canvas before drawing
+            ctx.beginPath();
+            renderBlock(curBlock);
+            for (let i = 0; i < nodes.length; i++) {
+                //lets render our nodes now :D
+                renderNode(nodes[i]);
+            }
+        }
+        let ac = 0, maxAc, animNum = -1;//animation counter
+        function animFrame() {
+            // called in each frame of animation when it is active
+            // anim.start() and anim.stop() to start and stop
+            renderScene();//render our fixed scene in each animation frame
+            let mvx, mvy;
+            switch (animNum) {
+                //only one anim code will be executed based on animNum, set it before anim.start()
+                case 0:
+                    let nl = nodes.length;
+                    if (ac == maxAc) {
+                        let miner = rand(0, nodes.length),
+                            finalHash = "00" + randString(4);
+                        nodes[miner].status = "Mined : " + finalHash;
+                        let blk = JSON.parse(JSON.stringify(curBlock));
+                        blk.hash = finalHash;
+                        let bLen = nodes[miner].blocks.length;
+                        blk.name = "Block " + (bLen + 1);
+                        blk.prevHash = bLen == 0 ? '' : nodes[miner].blocks[bLen - 1].hash;
+                        nodes[miner].blocks.push(blk);
+                        curBlock.transacs = [];
+                        for (let i = 0; i < nl; i++) {
+                            if (i == miner)
+                                continue;
+                            nodes[i].status = "Checking mined block validity";
+                        }
+
+                        setTimeout(function () {
+                            malert(nodes[miner].name + " has mined the new block, now other blocks will check validity of the mined block!")
+                            setTimeout(function () {
+                                for (let i = 0; i < nl; i++) {
+                                    nodes[i].status = "Idle";
+                                    if (i == miner)
+                                        continue;
+                                    let blk = JSON.parse(JSON.stringify(nodes[miner].blocks[bLen]));
+                                    nodes[i].blocks.push(blk);
+                                }
+                                curBlock.transacs.push(new Trans("System", nodes[miner].name, 5));
+                                addBut.disabled = false;
+                                mineBut.disabled = false;
+                                resetBut.disabled = false;
+                                renderScene();
+                                setTimeout(function () {
+                                    malert("Other blocks have validated the newly mined block, so they have added it to their ledgers now! " + nodes[miner].name + " has also been given miner reward as a result.", 1)
+                                }, 600);
+
+                            }, 5000);
+
+                        }, 400);
+
+                    }
+                    else
+                        for (let i = 0; i < nl; i++) {
+                            nodes[i].status = "Mining : " + randString(6);
+                        }
+                    break;
+            }
+            if (ac >= maxAc) {
+                animNum = - 1;
+                anim.stop();
+                renderScene();
+            }
+            ac++;
+        }
+        function mouseevt(x, y) {
+        }
+        let fromE = document.getElementById("from"),
+            toE = document.getElementById("to"),
+            amtE = document.getElementById("amt"),
+            addBut = document.getElementById("addBut"),
+            mineBut = document.getElementById("mineBut"),
+            resetBut = document.getElementById("resetBut");
+        function addToBlock() {
+            var from = fromE.value,
+                to = toE.value,
+                amt = amtE.value + "";
+            if (from.length == 0 || to.length == 0 || amt.length == 0)
+                return malert("None of the input fields can be empty", 2);
+            curBlock.transacs.push(new Trans(from, to, amt));
+            fromE.value = "";
+            toE.value = "";
+            amtE.value = "";
+            renderScene();
+        }
+        function mine() {
+            if (curBlock.transacs.length == 0)
+                return malert("Zero transactions in current block", 2);
+            addBut.disabled = true;
+            mineBut.disabled = true;
+            resetBut.disabled = true;
+            maxAc = 150 + rand(0, 50);
+            animNum = 0;
+            ac = 0;
+            anim.start();
+        }
+        function reset() {
+            curBlock.transacs = [];
+            for (let i = 0; i < nodes.length; i++) {
+                nodes[i].blocks = [];
+            }
+            renderScene();
+        }
+        renderScene();
+    </script>
+    <script src="../js/mouseevent.ob.js"></script>
+</body>
+
+</html>

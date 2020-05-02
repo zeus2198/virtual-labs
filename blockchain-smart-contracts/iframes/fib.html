@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+        }
+
+        #toastArea {
+            position: absolute;
+            top: 1%;
+            right: 1%;
+        }
+
+        .toast {
+            background-color: rgba(255, 255, 255, .85);
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: .25rem;
+            border-left: 3px solid #3f6ad8;
+            width: 20rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: glow-blue 1.5s infinite ease-in-out !important;
+        }
+
+        .toast.success {
+            border-left: 3px solid #31a66a;
+            animation: glow-green 1.5s infinite ease-in-out !important;
+        }
+
+        .toast.danger {
+            border-left: 3px solid #b81f44;
+            animation: glow-red 1.5s infinite ease-in-out !important;
+        }
+
+        @-webkit-keyframes glow-red {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(255, 50, 50, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(255, 50, 50, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(255, 50, 50, 0.9);
+            }
+        }
+
+        @keyframes glow-red {
+            0% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(255, 50, 50, 0.9);
+            }
+        }
+
+        @-webkit-keyframes glow-green {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 230, 50, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(50, 230, 50, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 230, 50, 0.9);
+            }
+        }
+
+        @keyframes glow-green {
+            0% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(50, 230, 50, 0.9);
+            }
+        }
+
+        @-webkit-keyframes glow-blue {
+            0% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 50, 255, 0.9);
+            }
+
+            50% {
+                -webkit-box-shadow: 0 0 50px 0px rgba(50, 50, 255, .2);
+            }
+
+            100% {
+                -webkit-box-shadow: 0 0 50px 50px rgba(50, 50, 255, 0.9);
+            }
+        }
+
+        @keyframes glow-blue {
+            0% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, 0.9);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, .2);
+            }
+
+            100% {
+                box-shadow: 0 0 50px rgba(50, 50, 255, 0.9);
+            }
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadein 0.5s;
+        }
+
+        .toast .toast-head {
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding: .25rem .75rem;
+            color: #6c757d;
+            background-color: rgba(255, 255, 255, .85);
+            background-clip: padding-box;
+            border-bottom: 1px solid rgba(0, 0, 0, .05);
+            position: relative;
+        }
+
+        .toast .toast-head button {
+            position: absolute;
+            right: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .toast .toast-body {
+            padding: 0.75rem;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                margin-bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                margin-bottom: 1rem;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                margin-bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                margin-bottom: 1rem;
+                opacity: 1;
+            }
+        }
+
+        #dis {
+            border: 1px solid #444;
+        }
+
+        .butt {
+            background: lightskyblue;
+            color: #fff;
+            padding: 0.8rem 1.7rem;
+            overflow: hidden;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 15px;
+            margin-right: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .butt:hover {
+            background: #3dbeff;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .words {
+            background: #fed86f;
+            color: #963;
+            padding: 1rem;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+
+        .words div {
+            padding: 1rem 2rem;
+            display: inline-block;
+            border: 1px solid #963;
+            box-sizing: border-box;
+            margin-bottom: 0.5rem;
+        }
+
+        .words div.active {
+            box-shadow: 0 2px 6px rgb(219, 133, 47);
+            color: rgb(219, 133, 47);
+        }
+
+        .fib {
+            background: #eee;
+            padding: 1rem;
+            font-family: sans-serif;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .blank {
+            min-width: 3rem;
+            text-align: center;
+            display: inline-block;
+            border-bottom: 1px solid #444;
+        }
+
+        .sentence {
+            padding: 1rem;
+            border: 1px solid #888;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .sentence.wrong {
+            border: 2px solid red;
+        }
+
+        .sentence button {
+            position: absolute;
+            right: 1%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #444;
+            color: #fff;
+            border: none;
+            outline: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #444;
+            display: none;
+        }
+
+        .sentence.wrong button {
+            display: block;
+        }
+
+        .sentence button:hover {
+            background: #fed86f;
+            color: #963;
+        }
+    </style>
+    <h2 style="font-family: sans-serif;">Fill in the blanks</h2>
+    <div class="words" id="targz">
+        <div data-ind="0" class="wrd">Certainty</div>
+        <div data-ind="1" class="wrd">Increased Efficiency</div>
+        <div data-ind="2" class="wrd">Smart contracts</div>
+        <div data-ind="3" class="wrd">third party</div>
+        <div data-ind="4" class="wrd">Donation campaign</div>
+    </div>
+    <small>Click on the word to select it, then click on the sentence to fill the selected word in that
+        sentence.</small>
+
+
+    <br /><br />
+    <div class="fib">
+        <div data-ind="0" class="sentence"><b>1.</b>Smart contract ensures no <span id="b0" class="blank"></span> is
+            involved.
+            <button data-ind="0" class="hint">Hint</button>
+        </div>
+        <div data-ind="1" class="sentence"><b>2.</b>A smart contract can be used in <span id="b1" class="blank"></span>
+            .
+            <button data-ind="1" class="hint">Hint</button>
+        </div>
+        <div data-ind="2" class="sentence"><b>3.</b>One of the main feature of Smart contract is <span id="b2"
+                class="blank"></span> .
+            <button data-ind="2" class="hint">Hint</button>
+        </div>
+        <div data-ind="3" class="sentence"><b>4.</b>The primary benefit of immutability is
+            <span id="b3" class="blank"></span> .
+            <button data-ind="3" class="hint">Hint</button>
+        </div>
+        <div data-ind="4" class="sentence"><b>5.</b> <span id="b4" class="blank"></span> are lines of code that are
+            stored on a blockchain and automatically execute when predetermined terms and conditions are met.
+            <button data-ind="4" class="hint">Hint</button>
+        </div>
+
+    </div>
+    <br />
+    <button class="butt" onclick="validate()">Validate</button>
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <div id="toastArea"></div>
+    <script>
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast${tc}" id="t${tos}">
+    <div class="toast-head">
+        <b>#${tos + 1}</b>&nbsp;Notification
+        <button class="toast-but" data-ind="${tos}">&#10006;</button>
+    </div>
+    <div class="toast-body">
+        ${msg}
+    </div>
+    </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+
+        let ans = Array(5).fill(-1);
+        let correctAns = [
+            [3, "a persoon with no relation to a contract", 1],
+            [4, "raising funds for a cause", 2],
+            [0, "Surety of initiation of contract ", 3],
+            [1, "Ensures trust", 4],
+            [2, "a computer protocol intended to digitally facilitate, verify, or enforce the negotiation or performance of a contract", 5]
+        ]
+        let act = -1, actData = "";
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (e.className && e.className.indexOf('wrd') != -1) {
+                let list = document.getElementsByClassName('wrd');
+                for (let i = 0; i < list.length; i++) {
+                    removeClass(list[i], 'active');
+                }
+                addClass(e, 'active');
+                act = parseInt(e.getAttribute('data-ind'));
+                actData = e.innerHTML;
+            }
+            else if (e.className && e.className.indexOf('sentence') != -1 && act != -1) {
+                let ele = document.getElementById("b" + e.getAttribute('data-ind'));
+                ans[parseInt(e.getAttribute('data-ind'))] = act;
+                ele.innerHTML = actData;
+                act = -1;
+                let list = document.getElementsByClassName('wrd');
+                for (let i = 0; i < list.length; i++) {
+                    removeClass(list[i], 'active');
+                }
+            }
+            else if (e.className && e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+            else if (e.className && e.className.indexOf('hint') != -1) {
+                malert("Hint for " + correctAns[parseInt(e.getAttribute('data-ind'))][2] + " : " + correctAns[parseInt(e.getAttribute('data-ind'))][1]);
+            }
+        }
+        function validate() {
+            let sentences = document.getElementsByClassName('sentence');
+            let wrong = false;
+            for (let i = 0; i < ans.length; i++) {
+                if (correctAns[i][0] != ans[i]) {
+                    wrong = true;
+                    addClass(sentences[i], "wrong");
+                }
+                else removeClass(sentences[i], "wrong");
+            }
+            if (wrong)
+                malert("Wrong answer or some answers are missing!", 2);
+            else
+                malert("Correct answers!", 1);
+        }
+    </script>
+</body>
+
+</html>

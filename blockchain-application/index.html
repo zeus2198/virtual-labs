@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>Document</title>
+</head>
+<style>
+    body {
+        background: #eee;
+    }
+
+    #btn_class {
+        font-weight: bold;
+        position: absolute;
+        top: 1%;
+        right: 1%;
+        padding: 0.5rem;
+        background-color: #154360;
+        border: none;
+        color: white;
+        /* padding: 13px 30px; */
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 1rem;
+        cursor: pointer;
+        /* margin-top: 1%; */
+    }
+
+    .wrapper {
+        width: 100%;
+        height: 100%;
+        margin-top:1rem;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin-top: 1rem;
+    }
+</style>
+
+<body>
+    <!--======================Frame 1st=====================================-->
+    <br />
+    <div class="wrapper">
+        <iframe frameborder="0" style="height:2550px" src="iframes/task.html" id="myframe"></iframe>
+    </div>
+
+    <button id="btn_class" onclick="changeiframe()">
+        Initiate Block Chain
+    </button>
+    <script>
+        let ar = [
+            ["iframes/appli.html", "End of experiment"]
+        ];
+        let c = 0;
+        function changeiframe() {
+            if (c == ar.length) return;
+            document.getElementById("myframe").contentWindow.location.replace(ar[c][0]);
+            //document.getElementById("myframe").src = ;
+            document.getElementById("btn_class").innerHTML = ar[c][1];
+            c++;
+
+        }
+    </script>
+</body>
+
+</html>

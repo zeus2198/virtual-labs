@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/jquery-ui.css">
+</head>
+
+<body>
+    <div class="container-fluid main-wrapper">
+        <div class="row lcontrol">
+            <div class="col">
+                <div class="panel">
+                    <center>
+                        <div class="btn-group btn-group-lg align-self-center scenes" role="group"
+                            aria-label="Basic example">
+                            <button type="button" data-mode="1" class="btn btn-primary active">SE Mode</button>
+                            <button type="button" data-mode="2" class="btn btn-primary">BSE Mode</button>
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+        <div class="row ucontrol">
+            <div class="col-3">
+                <div class="panel mb-1">
+                    <div class="panel-head">
+                        Instructions
+                    </div>
+                    <div id="typer">
+                    </div>
+                </div>
+                <div class="panel padd">
+                    Available Materials:
+                    <div class="row materials mt-2">
+                        <div data-mid="0" class="col-sm-2 col-md-3 material">
+                            <img src="./images/Slide38.JPG" class="img-thumbnail img-fluid" />
+                        </div>
+                        <div data-mid="1" class="col-sm-2 col-md-3 material">
+                            <img src="./images/Slide38.JPG" class="img-thumbnail img-fluid" />
+                        </div>
+                        <div data-mid="2" class="col-sm-2 col-md-3 material">
+                            <img src="./images/Slide38.JPG" class="img-thumbnail img-fluid" />
+                        </div>
+                        <div data-mid="3" class="col-sm-2 col-md-3 material">
+                            <img src="./images/Slide38.JPG" class="img-thumbnail img-fluid" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="formControlRange">Vaccum</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <div id="vslider" class="mt-3">
+                                    <div class="custom-handle ui-slider-handle"></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <button id="setvac" class="btn btn-primary w-100" disabled>Set</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="formControlRange">Accelerating voltage</label>
+                        <div class="row">
+                            <div class="col-9">
+                                <div id="avslider" class="mt-3">
+                                    <div class="custom-handle ui-slider-handle"></div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <button id="setav" class="btn btn-primary w-100" disabled>Set</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="on" class="but sm w-100 green">Switch On</button>
+                    <div class="form-group mt-4">
+                        <label for="formControlRange">Brightness</label>
+                        <div id="bslider" class="mt-3">
+                            <div class="custom-handle ui-slider-handle"></div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="formControlRange">Contrast</label>
+                        <div id="cslider" class="mt-3">
+                            <div class="custom-handle ui-slider-handle"></div>
+                        </div>
+                    </div>
+                    <button id="task" class="but sm w-100 blue mt-2" disabled="true">Task</button>
+                    <button class="btn btn-danger w-100 mt-2" onclick="location.reload()">Reset</button>
+                </div>
+            </div>
+            <div class="col-3">
+                <div id="partInfo" class="collapse show" class="panel">
+                    <div class="panel">
+                        Click on individual parts to learn more about them!
+                        <button class="float-right btn" style="margin-top:-0.9rem;font-size: 1.4rem;"
+                            data-toggle="collapse" href="#partInfo" role="button" aria-expanded="false"
+                            aria-controls="partInfo">&times;</button>
+                    </div>
+                </div>
+                <div class="panel" style="background:#444;position: relative;height: 52rem;">
+                    <!-- <img class="w-100" src="./images/micro.jpg" /> -->
+
+                    <img data-id="8" onclick="openPartModal(this)" src="./images/parts/8.png" class="part no-hover"
+                        style="top:3%; width:11rem;" />
+                    <img data-id="9" onclick="openPartModal(this)" src="./images/parts/9.png" class="part no-hover"
+                        style="top:62%; width:17rem;" />
+
+                    <img data-id="9" id="vacImg" onclick="openPartModal(this)" src="./images/parts/9.png"
+                        class="part no-hover" style="bottom:8%;opacity: 0.4; filter:saturate(25); width:17rem;" />
+                    
+                    <img data-id="7" data-toggle="tooltip" data-placement="right" title="Electron detector"
+                        onclick="openPartModal(this)" src="./images/parts/10.png" class="part"
+                        style="top:72%; left:61%; width:3rem;" />
+                    <img data-id="1" data-toggle="tooltip" data-placement="right" title="Wehnelt cap"
+                        onclick="openPartModal(this)" src="./images/parts/1.png" class="part"
+                        style="top:5%; width:4rem;" />
+                    <img data-id="2" data-toggle="tooltip" data-placement="right" title="Anode"
+                        onclick="openPartModal(this)" src="./images/parts/2.png" class="part"
+                        style="top:15%; width:2.5rem; " />
+                    <img data-id="3" data-toggle="tooltip" data-placement="right" title="Condensor lens"
+                        onclick="openPartModal(this)" src="./images/parts/3.png" class="part"
+                        style="top:21%; width:6rem;" />
+                    <img data-id="5" data-toggle="tooltip" data-placement="right" title="Objective lens"
+                        onclick="openPartModal(this)" src="./images/parts/5.png" class="part"
+                        style="top:41%; width:5.5rem;" />
+                    <img data-id="4" data-toggle="tooltip" data-placement="right" title="Spray aperture"
+                        onclick="openPartModal(this)" src="./images/parts/4.png" class="part"
+                        style="top:40%; width:4rem;" />
+                    <img src="./images/parts/6.png" class="part no-hover"
+                        style="top:60%; width:10rem;height:4rem" />
+                    <img data-id="6" data-toggle="tooltip" data-placement="right" title="Backscattered electron detector"
+                        onclick="openPartModal(this)" src="./images/parts/7.png" class="part"
+                        style="top:71%; width:3rem;" />
+                    <div id="dropzone">
+                    </div>
+                    <canvas id="beam2" width="256" height='80'
+                        style="position:absolute;top:75%;left:50%;transform:translateX(-50%);background:none;"></canvas>
+
+                    <canvas id="beam" width="15" height='480'
+                        style="position:absolute;top:12%;left:50%;transform:translateX(-50%);background:none;"></canvas>
+
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row mb-1">
+                    <div class="col-12" id="output">
+                        <div class="panel padd">
+                            <figure data-zoom data-zoom-max="5">
+                                <img id="outImage" class="w-100" src="./images/Slide1.JPG" />
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="col-12" id="taskArea">
+                        <div class="panel padd">
+                            <center>
+                                <h2>TASK</h2>
+                            </center>
+                            <br />
+                            Select the most appropiate image obtained when accelerating voltage is set at X at <b>BSE
+                                Mode</b>.
+                            <div class="row mt-3">
+                                <div class="input-group mb-3 col-6">
+                                    <label>
+                                        <input value="0" type="radio" name="task"
+                                            aria-label="Checkbox for following text input">
+                                        <img class="img-thumbnail" src="./images/Slide22.JPG">
+                                    </label>
+                                </div>
+                                <div class="input-group mb-3 col-6">
+                                    <label>
+                                        <input value="1" type="radio" name="task"
+                                            aria-label="Checkbox for following text input">
+                                        <img class="img-thumbnail" src="./images/Slide22.JPG">
+                                    </label>
+                                </div>
+                                <div class="input-group mb-3 col-6">
+                                    <label>
+                                        <input value="2" type="radio" name="task"
+                                            aria-label="Checkbox for following text input">
+                                        <img class="img-thumbnail" src="./images/Slide22.JPG">
+                                    </label>
+                                </div>
+                                <div class="input-group mb-3 col-6">
+                                    <label>
+                                        <input value="3" type="radio" name="task"
+                                            aria-label="Checkbox for following text input">
+                                        <img class="img-thumbnail" src="./images/Slide22.JPG">
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="but sm w-100 blue mt-2 mb-3" onclick="taskSubmit()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="toast-wrapper" aria-live="polite" aria-atomic="true" style="position:fixed;top:1rem;right:1rem;">
+        </div>
+
+        <div id="part-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="part-img" src="./images/parts/1.png" />
+                        <p class="mt-5">
+                            <b>Description:</b> <span id="part-desc">This part is used to do something, something
+                                something.
+                                Something something.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/popper.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/zoom.js"></script>
+    <script src="./js/jquery-ui.min.js"></script>
+    <script>
+        const typeSpeed = 60,
+            materials = [
+                "green",
+                "red",
+                "blue",
+                "yellow"
+            ],
+            parts = [
+                {
+                    img: "./images/parts/1.png",
+                    desc: "Contains electron gun assembly which is used to generate a beam of electrons"
+                },
+                {
+                    img: "./images/parts/2.png",
+                    desc: "This has charge opposite to that of electron and helps in accelerating the electrons produced by the electron gun above"
+                },
+                {
+                    img: "./images/parts/3.png",
+                    desc: "Helps in focusing of the electron beam"
+                },
+                {
+                    img: "./images/parts/4.png",
+                    desc: "Prevents electron spray"
+                },
+                {
+                    img: "./images/parts/5.png",
+                    desc: "This lens is the nearest to the sample and helps in the priamry focus of the beam to produce the final image"
+                },
+                {
+                    img: "./images/parts/7.png",
+                    desc: "Detects the backscattered electron from the sample."
+                },
+                {
+                    img: "./images/parts/10.png",
+                    desc: "Detects the electron deflected from the sample and helps in producing the primary image"
+                }
+            ];
+        var timerId, typeTarget = $("#typer"), tWrapper = $("#toast-wrapper"), ti = 0, currentStep = 0, contrast = 0, brightness = 0, vac = 0, av = 0, on = false,
+            dropped = false, imgs = [], mode = 1;
+        var beamCanvas = document.getElementById("beam");
+        var ctx = beamCanvas.getContext('2d');
+        var beamy = 0, beamx = parseInt(beamCanvas.width / 2), beamWidth, beamTimer = -1;
+        var beamCanvas2 = document.getElementById("beam2");
+        var ctx2 = beamCanvas2.getContext('2d');
+        var beam2H = beamCanvas2.height, beam2W = beamCanvas2.width, beamx2 = parseInt(beamCanvas2.width / 2), beamTimer2 = -1;
+
+        function randEx(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function type(txt, cur = 0) {
+            if (cur == txt.length) {
+                timerId = -1;
+                return;
+            }
+            if (cur == 0) {
+                typeTarget.html("");
+                clearTimeout(timerId);
+            }
+            typeTarget.append(txt.charAt(cur));
+            timerId = setTimeout(type, typeSpeed, txt, cur + 1);
+        }
+        function showToast(msg, type = 0) {
+            tWrapper.append(`<div id="t${ti++}" class="toast${type == 1 ? ' danger' : (type == 2 ? ' success' : '')}" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img"><rect width="100%" height="100%" fill="${type == 1 ? '#ff0000' : (type == 2 ? '#31a66a' : '#007aff')}" /></svg>
+                    <strong class="mr-auto">Notification</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    ${msg}
+            </div>
+            </div>`);
+            $(`#t${ti - 1}`).toast({
+                delay: 5500
+            });
+            $(`#t${ti - 1}`).toast('show');
+        }
+        function preload(arrayOfImages) {
+            $(arrayOfImages).each(function () {
+                $('<img/>')[0].src = this;
+            });
+        }
+
+        if (window.speechSynthesis.getVoices().length == 0) {
+            window.speechSynthesis.addEventListener('voiceschanged', function () {
+                tts(text);
+            });
+        }
+
+        function tts(text) {
+            var available_voices = window.speechSynthesis.getVoices();
+            var english_voice = '';
+            for (var i = 0; i < available_voices.length; i++) {
+                if (available_voices[i].lang === 'en-US') {
+                    english_voice = available_voices[i];
+                    break;
+                }
+            }
+            if (english_voice === '')
+                english_voice = available_voices[0];
+            var utter = new SpeechSynthesisUtterance();
+            utter.rate = 1;
+            utter.pitch = 0.5;
+            utter.text = text;
+            utter.voice = english_voice;
+            window.speechSynthesis.speak(utter);
+        }
+
+        function openPartModal(ele) {
+            const i = parseInt($(ele).attr("data-id"));
+            // console.log(i);
+            $("#part-desc").html(parts[i - 1].desc);
+            $("#part-img").attr("src", parts[i - 1].img);
+            setTimeout(() => $('#part-modal').modal('show'), 100);
+        }
+
+        function taskSubmit() {
+            if (parseInt($('input[name="task"]:checked').val()) == 2)
+                showToast("Correct Answer!", 2);
+            else
+                showToast("Wrong Answer!", 1);
+        }
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            type("Welcome, get started by putting the material to be scanned into the machine, this can be done by dragging and dropping it into material section. HINT: The material section will be highlighted when you drag material over it!");
+            tts("Welcome, get started by putting the material in the machine, reed instructions for hint.");
+            // setTimeout(() => {
+            //     for (var i = 0; i < 41; i++) {
+            //         imgs.push(`./images/Slide${i}.JPG`);
+            //     }
+            //     preload(imgs);
+            // }, 3000);
+
+            $(".material").draggable({
+                helper: 'clone',
+                cursor: "move",
+                revert: "invalid",
+                opacity: 0.5,
+                zIndex: 100
+            });
+            $("#dropzone").droppable({
+                tolerance: "touch",
+                hoverClass: "drop-hover",
+                accept: ".material",
+                addClasses: false,
+                drop: function (event, ui) {
+                    $("#dropzone").html(`<div style="background:${materials[parseInt((ui.draggable).attr("data-mid"))]}" class='material'></div>`);
+                    showToast("Material placed succesfully");
+                    dropped = true;
+                    type("Now that the material has been placed, it is time to switch on the machine!");
+                    tts("Try to switch on the machine now");
+                    $("#setvac").attr("disabled", false);
+                    $("#vslider").slider("option", "disabled", false);
+                }
+            });
+            var vhandle = $("#vslider").find(".custom-handle"), avhandle = $("#avslider").find(".custom-handle"), chandle = $("#cslider").find(".custom-handle"), bhandle = $("#bslider").find(".custom-handle");
+            $("#vslider").slider({
+                min: 0,
+                max: 3,
+                disabled: true,
+                create: function () {
+                    vhandle.text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    vhandle.text(ui.value);
+                }
+            });
+            $("#avslider").slider({
+                min: 0,
+                max: 3,
+                disabled: true,
+                create: function () {
+                    avhandle.text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    avhandle.text(ui.value);
+                }
+            });
+            $("#bslider").slider({
+                create: function () {
+                    bhandle.text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    bhandle.text(ui.value);
+                    brightness = ui.value;
+                    $("#outImage").css("filter", `brightness(${100 + brightness}%) contrast(${100 + contrast}%)`)
+                }
+            });
+            $("#cslider").slider({
+                max: 300,
+                create: function () {
+                    chandle.text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    chandle.text(ui.value);
+                    contrast = ui.value;
+                    $("#outImage").css("filter", `brightness(${100 + brightness}%) contrast(${100 + contrast}%)`)
+                }
+            });
+            $("#on").click(function () {
+                if (on) return showToast("Machine has already been switched on");
+                if (!dropped) return showToast("Place the material into machine first!", 1);
+                if (vac == 0)
+                    return showToast("Vaccum range is not in working condition", 1);
+                else {
+                    on = true;
+                    showToast("Machine has been switched on", 2);
+                    // $("#outImage").attr("src", `./images/Slide${10 + vac + av}.JPG`);
+                    setTimeout(() => $("#task").attr("disabled", false), 1000);
+                    $("#setav").attr("disabled", false);
+                    $("#avslider").slider("option", "disabled", false);
+                    type("Now you can set the accelerating voltage!");
+                }
+            });
+            $("#task").click(function () {
+                $("#output").fadeOut(600, () => $("#taskArea").delay(100).fadeIn());
+            });
+            $("#setvac").click(function () {
+                vac = $("#vslider").slider("option", "value");
+                showToast("Vaccum value has been set.");
+                if (parseInt(vac) != 0)
+                    $("#vacImg").animate({
+                        fontSize: 220
+                    },
+                        {
+                            step: function (now, fx) {
+                                // console.log(now);
+                                console.log(Math.round(now));
+                                $(this).css('clip', `rect(${Math.round(now)}px, 17rem, 300px, 0)`);
+                            },
+                            duration: 4000,
+                            easing: 'linear'
+
+                        });
+            });
+            $("#setav").click(function () {
+                av = $("#avslider").slider("option", "value");
+                clearInterval(beamTimer);
+                clearInterval(beamTimer2);
+                beamy = 0;
+                ctx.clearRect(0, 0, beamCanvas.width, beamCanvas.height);
+                ctx2.clearRect(0, 0, beam2W, beam2H);
+                beamTimer = beamTimer2 = -1;
+                beamTimer = setInterval(drawBeam, 10);
+            });
+            $(".scenes button").click(function () {
+                mode = parseInt($(this).attr("data-mode"));
+                $(".scenes button").removeClass("active");
+                $(this).addClass("active");
+            });
+
+        });
+        function drawBeam() {
+            // ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.msImageSmoothingEnabled = ctx.webkitImageSmoothingEnabled = false;
+
+            ctx.beginPath();
+            // ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.msImageSmoothingEnabled = ctx.webkitImageSmoothingEnabled = false;
+
+            beamWidth = Math.sin(beamy * 3.14 / 180) * 7;
+            ctx.shadowBlur = 1;
+            ctx.shadowColor = '#FEF1BAFF';
+            ctx.strokeStyle = "#FFFFFFBB";
+            ctx.shadowOffsetY = 0;
+            ctx.shadowOffsetX = beamWidth;
+            ctx.moveTo(beamx, beamy);
+            ctx.lineTo(beamx + 1, beamy);
+            ctx.stroke();
+
+
+            ctx.shadowOffsetX = -beamWidth / 2;
+            ctx.moveTo(beamx, beamy);
+            ctx.lineTo(beamx + 1, beamy);
+            ctx.stroke();
+
+            ctx.shadowOffsetX = beamWidth / 2;
+            ctx.moveTo(beamx, beamy);
+            ctx.lineTo(beamx + 1, beamy);
+            ctx.stroke();
+
+            ctx.shadowOffsetX = -beamWidth;
+            ctx.moveTo(beamx, beamy);
+            beamy += 1;
+            ctx.lineTo(beamx, beamy);
+            ctx.stroke();
+            if (beamy >= beamCanvas.height) {
+                clearInterval(beamTimer);
+                beamTimer = -1;
+                beamTimer2 = setInterval(drawBeam2, 100);
+                $("#outImage").attr("src", `./images/Slide${10 + av}.JPG`);
+            }
+        }
+        function drawBeam2() {
+            ctx2.beginPath();
+            ctx2.clearRect(0, 0, beam2W, beam2H);
+            ctx2.strokeStyle = "#FFFFFFBB";
+            ctx2.moveTo(beamx2, 23);
+            ctx2.lineTo(beamx2 + 60 + randEx(-5, 5), randEx(-10, 5));
+            ctx2.moveTo(beamx2 - 6, 23);
+            ctx2.lineTo(beamx2 + 60 + randEx(-5, 5), randEx(-10, 5));
+            ctx2.stroke();
+        }
+
+    </script>
+</body>
+
+</html>

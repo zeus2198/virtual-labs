@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+</head>
+
+<body>
+    <style>
+        #dis {
+            border: 1px solid #444;
+        }
+
+        .butt {
+            background: lightskyblue;
+            color: #fff;
+            padding: 0.8rem 1.7rem;
+            overflow: hidden;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 15px;
+            margin-right: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .butt:hover {
+            background: #3dbeff;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .butt.green {
+            background: lightgreen;
+        }
+
+        .butt.green:hover {
+            background: green;
+        }
+
+        .butt.red {
+            background: lightcoral;
+        }
+
+        .butt.red:hover {
+            background: red;
+        }
+
+        .flexCont {
+            display: flex;
+            flex-wrap: nowrap;
+            margin-bottom: 1rem;
+        }
+
+        .flexCont>div {
+            width: 49%;
+        }
+
+        #stat {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            padding-top: 2rem;
+            font-family: sans-serif;
+            width: 45%;
+            background: #fed86f;
+            color: #963;
+            font-style: "Open Sans", sans-serif;
+            position: relative;
+        }
+
+        #stat:after {
+            position: absolute;
+            top: 1%;
+            left: 1%;
+            content: 'INFO BOX';
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        #donation,
+        #basic,
+        #donInBasic {
+            display: none;
+        }
+    </style>
+    <div class="flexCont">
+        <div id="targz">
+            <b>Smart contracts:</b><br /><br />
+            Select the type of contract: &nbsp;&nbsp;
+            <select id="contractType" onchange="contractChange(this)">
+                <option value="0">Select an option</option>
+                <option value="1">Simple Explanation</option>
+                <option value="2">Donation Campaign Example</option>
+            </select>
+            <br /><br />
+            <div id="donation">
+                <input type="text" id="dname" placeholder="Donation Campaign Name" />
+                <br /><br />
+                User that will receive amount once donation target amount is met:
+                <input type="text" id="dtarget" placeholder="User name" />
+                <br /><br />
+                Target Amount: <input type="number" id="damt" placeholder="Amount" />
+                <br /><br />
+                <input type="number" id="dtime" placeholder="Timelimit(seconds)" />
+                <br /><br />
+                <button class="butt" id="dButt" onclick="createContract()">Create Contract</button>
+                <br /><br />
+                <span id="timer">Timer: 0s</span>
+                <br /><br />
+            </div>
+            <div id="basic">
+                <input type="text" id="from" placeholder="From" />
+                <input type="text" id="to" placeholder="To" />
+                <input type="number" id="amt" placeholder="Amount" />
+                <br /><br />
+                <button class="butt" id="addBut" onclick="addToBlock()">Add to block</button>
+                <button class="butt green" id="pubBut" onclick="publish()">Publish validated block</button>
+                <button class="butt red" id="resetBut" onclick="reset()">Reset</button>
+                <br />
+                <br />
+                <span id="aAmtSpan">
+                    Amount with user A: <b style="color:green" id="userAmt">$0</b>
+                </span>
+                <small id="donInBasic">
+                    <br />Enter Donation Campaign Name in 'To' field for donation<br />
+                    Amount received in donation: <b style="color:green" id="donAmt">$0</b>
+                </small>
+                <br /><br />
+                <small>
+                    <b>Note:</b> Only after you've clicked on "Publish Validated Block", the changes will be reflected
+                    in the balance above.
+                    <br /> This is because a block has to be validated in order for transactions in it to be considered
+                    validated.
+                </small>
+
+            </div>
+        </div>
+        <div id="stat">
+        </div>
+    </div>
+    <center>
+        <canvas id="dis" width="800" height="600"></canvas>
+    </center>
+    <br />
+    <div id="toastArea"></div>
+    <script>
+        //@author: Simran Singh (simran.singh2198@gmail.com)
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast glow-shadow${tc}" id="t${tos}">
+            <div class="toast-head">
+                <b>#${tos + 1}</b>&nbsp;Notification
+                <button class="toast-but" data-ind="${tos}">&#10006;</button>
+            </div>
+            <div class="toast-body">
+                ${msg}
+            </div>
+            </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (e.className && e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+
+
+        const BLOCK_WIDTH = 150;
+        const typeSpeed = 30;
+
+        class Trans {
+            //transactions class
+            constructor(from, to, amount) {
+                Object.assign(this, { from, to, amount });
+            }
+        }
+
+        class Block {
+            //blocks class
+            constructor(x, y, w, h, name, transacs = [], prevHash = '', hash = '', showHash = true) {
+                // transacs = array of transactions in the block, each item in array is object of class Trans               
+                Object.assign(this, { x, y, h, w, name, transacs, prevHash, hash, showHash });
+            }
+        }
+
+        class Node {
+            //you can also call this miner
+            constructor(x, y, w, h, name, blocks) {
+                Object.assign(this, { x, y, w, h, name, blocks });
+            }
+        }
+
+        let stat = document.getElementById("stat"), timerId = -1;
+
+        function type(txt, cur = 0) {
+            if (cur == txt.length) {
+                timerId = -1;
+                return;
+            }
+            if (cur == 0) {
+                stat.innerHTML = "";
+                clearTimeout(timerId);
+            }
+            stat.innerHTML += txt.charAt(cur);
+            timerId = setTimeout(type, typeSpeed, txt, cur + 1);
+        }
+
+        type("A smart contract is a program residing in the blockchain itself  which executes specific code when certain conditions are met, select an option from the side get started!", 0);
+
+        function randString(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        function rand(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+        var canvas = document.getElementById("dis");
+        var ctx = canvas.getContext("2d");
+
+        function renderBlock(b, active = 0) {
+            let h = b.transacs.length ? b.transacs.length * 20 + 70 : b.h; // modifying height according to number of transactions in the block
+            if (active) ctx.strokeStyle = "#00FF00";
+            ctx.rect(b.x, b.y, b.w, h);//block box
+
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.strokeStyle = "#000000";
+
+            //block name: "Block A"
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(b.name, b.x + (b.w / 2), b.y + 10);
+
+            //Hash:
+            if (showHash) {
+                ctx.fillStyle = "#0000ff";
+                ctx.fillText('Prev Hash: ' + b.prevHash, b.x + (b.w / 2), b.y + 30);
+
+                ctx.fillText('Hash: ' + b.hash, b.x + (b.w / 2), b.y + h - 10);
+            }
+
+            //line below "Block A"
+            ctx.moveTo(b.x, b.y + 17, 0);
+            ctx.lineTo(b.x + b.w, b.y + 17);
+
+            //font settings of transactions
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#ff0000";
+            for (let i = 0; i < b.transacs.length; i++) {
+                let t = b.transacs[i];
+                ctx.fillText(t.from + "  -> " + t.to + "  Amt: " + t.amount, b.x + (b.w / 2), b.y + (i * 20) + 55);//writing transactions position calculated according to blocks x,y
+            }
+            ctx.stroke();
+        }
+
+        function renderNode(n) {
+            ctx.beginPath();
+            ctx.rect(n.x, n.y, n.w, n.h);//the main box of node
+
+            //name of node: "Node A"
+            ctx.font = "20px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(n.name, n.x + (n.w / 2), n.y + 15);
+
+
+            //the line under "Node A"
+            ctx.moveTo(n.x, n.y + 27, 0);
+            ctx.lineTo(n.x + n.w, n.y + 27);
+
+            for (let i = 0; i < n.blocks.length; i++) {
+                //looping through blocks in the node
+                //manipulating block position in each node:
+                n.blocks[i].x = n.x + 10 + (i % 4) * (BLOCK_WIDTH + 10);
+                n.blocks[i].y = n.y + 45 + parseInt(i / 4) * 150;
+                renderBlock(n.blocks[i]);
+            }
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+
+        // ================================== YOU JUST NEED TO LOOK AT THIS CODE =========================================
+        let active = -1;
+
+        let t = [
+            new Trans("A", "B", 10),
+            new Trans("B", "C", 20),
+        ];
+
+        var blks = []
+
+        let nodes = [
+            new Node(10, 140, (BLOCK_WIDTH * 4) + 180, 380, "Node A", blks)
+        ];
+
+        var curBlock = new Block(330, 10, BLOCK_WIDTH, 70, "Block to be Added", [], showHash = false);
+        let aAmt = 0, donAmt = 0, curView = 0, dCamp = "", donations = [];
+
+        let minerName = document.getElementById("name"),
+            stake = document.getElementById("stake");
+        let fromE = document.getElementById("from"),
+            toE = document.getElementById("to"),
+            amtE = document.getElementById("amt"),
+            addBut = document.getElementById("addBut"),
+            pubBut = document.getElementById("pubBut"),
+            resetBut = document.getElementById("reset"),
+            nodeBut = document.getElementById("addNode"),
+            basic = document.getElementById("basic"),
+            donation = document.getElementById("donation"),
+            aAmtDom = document.getElementById("userAmt"),
+            damt = document.getElementById("damt"),
+            dname = document.getElementById("dname"),
+            dtarget = document.getElementById("dtarget"),
+            dtime = document.getElementById("dtime"),
+            dButt = document.getElementById("dButt"),
+            aAmtSpan = document.getElementById("aAmtSpan"),
+            timer = document.getElementById("timer"),
+            donInBasic = document.getElementById("donInBasic"),
+            donAmtDom = document.getElementById("donAmt");
+
+
+
+        function renderScene() {
+            //render whole scene
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // lets clear canvas before drawing
+            ctx.beginPath();
+
+            renderBlock(curBlock);
+
+            for (let i = 0; i < nodes.length; i++) {
+                //lets render our nodes now :D
+                renderNode(nodes[i]);
+            }
+
+        }
+
+        function mouseevt(x, y) {
+        }
+
+        function addToBlock() {
+            var from = fromE.value,
+                to = toE.value,
+                amt = amtE.value + "";
+            if (from.length == 0 || to.length == 0 || amt.length == 0)
+                return malert("None of the input fields can be empty", 2);
+            curBlock.transacs.push(new Trans(from, to, amt));
+            fromE.value = "";
+            toE.value = "";
+            amtE.value = "";
+            renderScene();
+        }
+
+        function publish() {
+            if (curBlock.transacs.length == 0)
+                return malert("Zero transactions in block to be added, add some transactions first", 2);
+
+            let finalHash = "00" + randString(6);
+            for (let i = 0; i < curBlock.transacs.length; i++) {
+                if (curView == 1) {
+                    if (curBlock.transacs[i].to == 'A')
+                        aAmt += parseInt(curBlock.transacs[i].amount);
+                    else if (curBlock.transacs[i].from == 'A')
+                        aAmt -= parseInt(curBlock.transacs[i].amount);
+                }
+
+                if (curView == 2) {
+                    console.log(dCamp, curBlock.transacs[i].to)
+                    if (curBlock.transacs[i].to == dCamp) {
+                        donAmt += parseInt(curBlock.transacs[i].amount);
+                        donations.push(new Trans(curBlock.transacs[i].from, curBlock.transacs[i].to, curBlock.transacs[i].amount));
+                    }
+
+                }
+            }
+            let blk = JSON.parse(JSON.stringify(curBlock));
+            blk.hash = finalHash;
+            let bLen = nodes[0].blocks.length;
+            blk.name = "Block " + (bLen + 1);
+            blk.prevHash = bLen == 0 ? '' : nodes[0].blocks[bLen - 1].hash;
+            nodes[0].blocks.push(blk);
+            curBlock.transacs = [];
+            aAmtDom.innerHTML = "$" + aAmt;
+            donAmtDom.innerHTML = "$" + donAmt;
+            renderScene();
+            if (aAmt >= 100 && curView == 1)
+                setTimeout(function () { malert("The amount recieved by 'A' has reached 100 so smart contract conditions are met!", 1) }, 400);
+            else
+                setTimeout(function () { malert("Send 'A' amount of 100 total for smart contract conditions to be met.", 1) }, 400);
+        }
+
+        function contractChange(e) {
+            let val = parseInt(e.value);
+            switch (val) {
+                case 1:
+                    curView = 1;
+                    type("In this particular example, we have a very simple smart contract, whenever user 'A' receives a grand total of $100 or more than that amount you will get an notification on your screen. Go on, make some transactions to user 'A'.")
+                    basic.style.display = 'block';
+                    donation.style.display = 'none';
+                    aAmt = 0;
+                    aAmtDom.innerHTML = "$0";
+                    curBlock.transacs = [];
+                    nodes[0].blocks = [];
+                    aAmtSpan.style.display = 'inline';
+                    donInBasic.style.display = 'none';
+                    renderScene();
+                    clearTimeout(ttId);
+                    break;
+                case 2:
+                    curView = 2;
+                    donAmt = 0;
+                    donations = [];
+                    type("In a donation campaign, a person tries to get a minimum of amount of donation say X within a specified time limit. If, however, the donation amount is not met within the specified time period the funds are released back to the donators. Funds are only released to the receiving party when the goal is met. YOUR task for now is to set the terms of contract, and then proceed to click on 'Create Contract' button, after which you need to make transactions to donation campaign you created and within the timelimit that you specified.", 0)
+                    basic.style.display = 'none';
+                    dButt.disabled = dname.disabled = dtarget.disabled = dtime.disabled = damt.disabled = false;
+                    donation.style.display = 'block';
+                    donAmtDom.innerHTML = "$0";
+                    curBlock.transacs = [];
+                    nodes[0].blocks = [];
+                    clearTimeout(ttId);
+                    timer.innerHTML = "Timer: 0s";
+                    renderScene();
+                    break;
+            }
+
+        }
+
+        let totT = 0, ttId = -1;
+        function updateTimer(val) {
+            timer.innerHTML = "Timer: " + val + "s";
+            if (val == totT) {
+                if (donAmt >= parseInt(damt.value)) {
+                    malert("As the total donation amount is $" + donAmt + " which is greater than or equal to our target donation amount $" + damt.value + ", donations will now be released to the receiver '" + dtarget.value + "'", 1);
+                    curBlock.transacs.push(new Trans(dCamp, dtarget.value, donAmt));
+                }
+                else {
+                    malert("As the total donation amount is $" + donAmt + " which is less than our target donation amount $" + damt.value + ", so the donations will now be refunded back to the donators as our smart contract says the receiver will only get the donations when donation amount is greater than or equal to target amount", 2);
+                    for (let i = 0; i < donations.length; i++) {
+                        let d = donations[i];
+                        curBlock.transacs.push(new Trans(d.to, d.from, d.amount));
+                    }
+                    donAmt = 0;
+                    donAmtDom.innerHTML = "$" + donAmt;
+                }
+                renderScene();
+                return;
+            }
+            ttId = setTimeout(updateTimer, 1000, val + 1);
+        }
+        function createContract() {
+            type("Contract has been created, timer will start in a few seconds...");
+            if (dname.value.length == 0 || dtarget.value.length == 0 || (damt.value + "").length == 0 || (dtime.value + "").length == 0)
+                return malert("None of the fields can be empty!", 2);
+            totT = parseInt(dtime.value);
+            dCamp = dname.value;
+            dButt.disabled = dname.disabled = dtarget.disabled = dtime.disabled = damt.disabled = true;
+            setTimeout(function () {
+                donInBasic.style.display = 'inline';
+                aAmtSpan.style.display = 'none';
+                basic.style.display = 'block';
+                timer.innerHTML = "Timer: 0s";
+                type("Create transactions to '" + dCamp + "', before the timer runs out!");
+                ttId = setTimeout(updateTimer, 1000, 1);
+            }, 3700);
+
+        }
+
+        function reset() {
+            switch (curView) {
+                case 1:
+                    type("In this particular example, we have a very simple smart contract, whenever user 'A' receives a grand total of $100 or more than that amount you will get an notification on your screen. Go on, make some transactions to user 'A'.")
+                    basic.style.display = 'block';
+                    donation.style.display = 'none';
+                    aAmt = 0;
+                    aAmtDom.innerHTML = "$0";
+                    curBlock.transacs = [];
+                    nodes[0].blocks = [];
+                    aAmtSpan.style.display = 'inline';
+                    donInBasic.style.display = 'none';
+                    renderScene();
+                    clearTimeout(ttId);
+                    break;
+                case 2:
+                    donAmt = 0;
+                    donations = [];
+                    type("In a donation campaign, a person tries to get a minimum of amount of donation say X within a specified time limit. If, however, the donation amount is not met within the specified time period the funds are released back to the donators. Funds are only released to the receiving party when the goal is met.", 0)
+                    basic.style.display = 'none';
+                    dButt.disabled = dname.disabled = dtarget.disabled = dtime.disabled = damt.disabled = false;
+                    donation.style.display = 'block';
+                    donAmtDom.innerHTML = "$0";
+                    curBlock.transacs = [];
+                    nodes[0].blocks = [];
+                    clearTimeout(ttId);
+                    timer.innerHTML = "Timer: 0s";
+                    renderScene();
+                    break;
+            }
+        }
+
+        renderScene();
+    </script>
+    <!-- <script src="mouseevent.ob.js"></script> -->
+</body>
+
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+</head>
+
+<body>
+    <style>
+        .blk-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .block {
+            width: 40%;
+            margin-bottom: 0.5rem;
+            margin-right: 0.9rem;
+            position: relative;
+        }
+
+        .block:after {
+            position: absolute;
+            left: -0.8rem;
+            top: 50%;
+            content: '\25B6';
+        }
+
+        .block:nth-child(1):after {
+            content: '';
+        }
+    </style>
+    <div class="container">
+        <br />
+        <div class="headingz">
+            <p>the</p>
+            <h2><span class="left"></span>Blockchain<span class="right"></span></h2>
+            <br>
+        </div>
+
+        <div class="box">
+            <div class="head">Set difficulty level</div>
+            <div class="boxBody">
+                Hash Difficulty Level:
+                <select onchange="diffChange(this.value)" id="diff">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                </select>
+                <br /><br />
+                The general formula for hash of a block is:
+                <pre>current_block_hash = hash_function(data + previous_hash)</pre>
+                <br>
+                The difficulty level denotes the amount of 0's the hash should start with for it to be considered valid.
+                For example, if the difficulty level is 2 the hash should start with '00'.
+                <br><br>
+                To accomplish this, we need to change input to our hash function, but there is no variable input
+                as seen in the formula above, so we introduce a variable input to our formula, this variable is called
+                <b>nonce</b>.
+                <br><br>
+                We change value of this variable(nonce) until we get a valid hash. So the new formula becomes:
+                <pre>current_block_hash = hash_function(data + previous_hash + nonce)</pre>
+
+                <small><b>The more the difficulty level, the longer it will take to find hash of a block.</b></small>
+            </div>
+        </div>
+        <br /><br />
+        <div class="blk-wrapper">
+            <div id="blk0" data-ind="0" class="block">
+                <div id="targz" class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp0"
+                            data-ind="0" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph0" data-ind="0" class="prevHash"></span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h0" data-ind="0"
+                    class="hash">000f21ac06aceb9cdd0575e82d0d85fc39bed0a7a1d71970ba1641666a44f530</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce0" data-ind="0" class="nonce">886</span>
+                <br /><br />
+                <h2>Genisis Block</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine0" data-ind="0"
+                        class="but">Mine</button></span>
+
+            </div>
+
+            <!-- <center>&#x25BC;</center> -->
+
+            <div id="blk1" data-ind="1" class="block">
+                <div class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp1"
+                            data-ind="1" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph1" data-ind="1"
+                    class="prevHash">000f21ac06aceb9cdd0575e82d0d85fc39bed0a7a1d71970ba1641666a44f530</span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h1" data-ind="1"
+                    class="hash">0004f042f433d0a4fff36321c4f9102f945ebdf6b82432e326eb9459aa630253</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce1" data-ind="1" class="nonce">5684</span>
+                <br /><br />
+                <h2>Block 2</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine1" data-ind="1"
+                        class="but">Mine</button></span>
+
+            </div>
+            <!-- <center>&#x25BC;</center> -->
+            <div id="blk2" data-ind="2" class="block">
+                <div class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp2"
+                            data-ind="2" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph2" data-ind="2"
+                    class="prevHash">0004f042f433d0a4fff36321c4f9102f945ebdf6b82432e326eb9459aa630253</span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h2" data-ind="2"
+                    class="hash">00039062bcd56f829dcaf94c9a50e16017dd2ffdf4363bb58740921c68105d21</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce2" data-ind="2" class="nonce">3799</span>
+                <br /><br />
+                <h2>Block 3</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine2" data-ind="2"
+                        class="but">Mine</button></span>
+            </div>
+            <!-- <center>&#x25BC;</center> -->
+
+            <div id="blk3" data-ind="3" class="block">
+                <div class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp3"
+                            data-ind="3" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph3" data-ind="3"
+                    class="prevHash">00039062bcd56f829dcaf94c9a50e16017dd2ffdf4363bb58740921c68105d21</span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h3" data-ind="3"
+                    class="hash">00081229ad1ae20192f725bfd19e85261690cfd07029c24e41e3291c6ab57f79</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce3" data-ind="3" class="nonce">4280</span>
+                <br /><br />
+                <h2>Block 4</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine3" data-ind="3"
+                        class="but">Mine</button></span>
+
+            </div>
+            <!-- <center>&#x25BC;</center> -->
+            <div id="blk4" data-ind="4" class="block">
+                <div class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp4"
+                            data-ind="4" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph4" data-ind="4"
+                    class="prevHash">00081229ad1ae20192f725bfd19e85261690cfd07029c24e41e3291c6ab57f79</span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h4" data-ind="4"
+                    class="hash">000c2a31e7363ea7c7c38d57b630fef5dfd49fe43172a8c0b5cbc19f8caa8a9a</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce4" data-ind="4" class="nonce">3078</span>
+                <br /><br />
+                <h2>Block 5</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine4" data-ind="4"
+                        class="but">Mine</button></span>
+
+            </div>
+            <!-- <center>&#x25BC;</center> -->
+            <div id="blk5" data-ind="5" class="block">
+                <div class="input-group">
+                    <div class="input-group-icon">DATA</div>
+                    <div class="input-group-area"><input onfocus="inpFocus(this)" onkeydown="inpChange(this)" id="inp5"
+                            data-ind="5" type="text">
+                    </div>
+                </div>
+                <br />
+                <small>Previous Hash:</small> <span id="ph5" data-ind="5"
+                    class="prevHash">000c2a31e7363ea7c7c38d57b630fef5dfd49fe43172a8c0b5cbc19f8caa8a9a</span>
+                <br /><br />
+                <small>Hash:<br /></small> <span id="h5" data-ind="5"
+                    class="hash">000545cb04ffec20650a21c61d084b0cbca8138821cd17b7749886b29bde3024</span>
+                <br /><br /> <br />
+                <small>Nonce:</small> <span id="nonce5" data-ind="5" class="nonce">3632</span>
+                <br /><br />
+                <h2>Block 6</h2>
+                <span style="float:right;margin-top:-3rem"> <button id="mine5" data-ind="5"
+                        class="but">Mine</button></span>
+            </div>
+        </div>
+
+    </div>
+    <div id="toastArea"></div>
+    <script>
+        const BLOCKS = 6;
+        let difString = '000', foc = true;
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast${tc}" id="t${tos}">
+    <div class="toast-head">
+        <b>#${tos + 1}</b>&nbsp;Notification
+        <button class="toast-but" data-ind="${tos}">&#10006;</button>
+    </div>
+    <div class="toast-body">
+        ${msg}
+    </div>
+    </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (e.className && e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+            else if (e.className && e.className.indexOf('but') != -1) {
+                mine(parseInt(e.getAttribute('data-ind')))
+            }
+
+        }
+
+        var sha256 = function sha256(ascii) {
+            function rightRotate(value, amount) {
+                return (value >>> amount) | (value << (32 - amount));
+            };
+
+            var mathPow = Math.pow;
+            var maxWord = mathPow(2, 32);
+            var lengthProperty = 'length'
+            var i, j; // Used as a counter across the whole file
+            var result = ''
+
+            var words = [];
+            var asciiBitLength = ascii[lengthProperty] * 8;
+
+            //* caching results is optional - remove/add slash from front of this line to toggle
+            // Initial hash value: first 32 bits of the fractional parts of the square roots of the first 8 primes
+            // (we actually calculate the first 64, but extra values are just ignored)
+            var hash = sha256.h = sha256.h || [];
+            // Round constants: first 32 bits of the fractional parts of the cube roots of the first 64 primes
+            var k = sha256.k = sha256.k || [];
+            var primeCounter = k[lengthProperty];
+            /*/
+            var hash = [], k = [];
+            var primeCounter = 0;
+            //*/
+
+            var isComposite = {};
+            for (var candidate = 2; primeCounter < 64; candidate++) {
+                if (!isComposite[candidate]) {
+                    for (i = 0; i < 313; i += candidate) {
+                        isComposite[i] = candidate;
+                    }
+                    hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+                    k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+                }
+            }
+
+            ascii += '\x80' // Append Ƈ' bit (plus zero padding)
+            while (ascii[lengthProperty] % 64 - 56) ascii += '\x00' // More zero padding
+            for (i = 0; i < ascii[lengthProperty]; i++) {
+                j = ascii.charCodeAt(i);
+                if (j >> 8) return; // ASCII check: only accept characters in range 0-255
+                words[i >> 2] |= j << ((3 - i) % 4) * 8;
+            }
+            words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+            words[words[lengthProperty]] = (asciiBitLength)
+
+            // process each chunk
+            for (j = 0; j < words[lengthProperty];) {
+                var w = words.slice(j, j += 16); // The message is expanded into 64 words as part of the iteration
+                var oldHash = hash;
+                // This is now the undefinedworking hash", often labelled as variables a...g
+                // (we have to truncate as well, otherwise extra entries at the end accumulate
+                hash = hash.slice(0, 8);
+
+                for (i = 0; i < 64; i++) {
+                    var i2 = i + j;
+                    // Expand the message into 64 words
+                    // Used below if 
+                    var w15 = w[i - 15], w2 = w[i - 2];
+
+                    // Iterate
+                    var a = hash[0], e = hash[4];
+                    var temp1 = hash[7]
+                        + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) // S1
+                        + ((e & hash[5]) ^ ((~e) & hash[6])) // ch
+                        + k[i]
+                        // Expand the message schedule if needed
+                        + (w[i] = (i < 16) ? w[i] : (
+                            w[i - 16]
+                            + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) // s0
+                            + w[i - 7]
+                            + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10)) // s1
+                        ) | 0
+                        );
+                    // This is only used once, so *could* be moved below, but it only saves 4 bytes and makes things unreadble
+                    var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) // S0
+                        + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2])); // maj
+
+                    hash = [(temp1 + temp2) | 0].concat(hash); // We don't bother trimming off the extra ones, they're harmless as long as we're truncating when we do the slice()
+                    hash[4] = (hash[4] + temp1) | 0;
+                }
+
+                for (i = 0; i < 8; i++) {
+                    hash[i] = (hash[i] + oldHash[i]) | 0;
+                }
+            }
+
+            for (i = 0; i < 8; i++) {
+                for (j = 3; j + 1; j--) {
+                    var b = (hash[i] >> (j * 8)) & 255;
+                    result += ((b < 16) ? 0 : '') + b.toString(16);
+                }
+            }
+            return result;
+        };
+
+        let hh;
+        function mineTimeout(n, prev, hDom, nDom, i, cur, inp) {
+            hh = sha256(n + inp + prev);
+            hDom.innerHTML = hh;
+            nDom.innerHTML = n;
+            if (!hh.startsWith(difString)) setTimeout(mineTimeout, 3, n + 1, prev, hDom, nDom, i, cur, inp);
+            else {
+                removeClass(document.getElementById("blk" + i), "error");
+                if (i != 5)
+                    document.getElementById("ph" + (i + 1)).innerHTML = hh;
+                if (hh != cur)
+                    for (i = i + 1; i < BLOCKS; i++)
+                        addClass(document.getElementById("blk" + i), "error");
+
+
+            }
+        }
+
+        function mine(i) {
+            malert("Calculating hash for the block, difficulty level is " + difString.length);
+            let prev = i == 0 ? '' : document.getElementById("ph" + (i - 1)).innerHTML;
+            let hDom = document.getElementById("h" + i), nDom = document.getElementById("nonce" + i), inp = document.getElementById("inp" + i).value;
+            let cur = hDom.innerHTML;
+            mineTimeout(0, prev, hDom, nDom, i, cur, inp);
+        }
+
+        function inpChange(e) {
+            if (foc) {
+                malert("Block's data has been changed, the hash for this block and the blocks following this one will have to be recalculated")
+                foc = false;
+            }
+            let i = parseInt(e.getAttribute('data-ind'));
+            for (; i < BLOCKS; i++)
+                addClass(document.getElementById("blk" + i), "error");
+        }
+        function diffChange(val) {
+            val = parseInt(val);
+            difString = '';
+            let i;
+            for (i = 0; i < val; i++)
+                difString += '0';
+            for (i = 0; i < BLOCKS; i++)
+                addClass(document.getElementById("blk" + i), "error");
+            malert("You need to mine each block again because hash difficulty level has been changed, so older hashes aren't valid anymore");
+        }
+        function inpFocus(e) {
+            foc = true;
+        }
+        /*setTimeout(() => {
+            let prev = '', h, n = 0;
+            for (i = 0; i < 6; i++) {
+                h = sha256(n + prev);
+                if (h.startsWith('000')) {
+                    console.log(i, h, n);
+                    n = 0;
+                    prev = h;
+                }
+                else i-- , n++;
+            }
+        }, 1000);*/
+
+    </script>
+</body>
+
+</html>

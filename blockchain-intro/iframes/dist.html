@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+
+<body>
+    <style>
+        #dis {
+            border: 1px solid #444;
+        }
+
+        .butt {
+            background: mediumvioletred;
+            color: #fff;
+            padding: 0.8rem 1.7rem;
+            overflow: hidden;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: all 0.4s;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+
+        }
+
+        .butt:hover {
+            background: seagreen;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 50px;
+            color: rgb(13, 75, 110);
+        }
+
+        .container {
+            /* margin: 0; */
+            padding: 0;
+            text-align: center;
+            margin-left: 2rem;
+        }
+
+        .cont {
+            display: flex;
+            /* flex-wrap: wrap; */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .instruct1 {
+            margin-right: 1rem;
+        }
+    </style>
+    <center>
+        <h2 class="simHead"> DISTRIBUTION </h2>
+    </center>
+
+    <br /><br />
+    <div class="cont">
+        <div style="padding:2rem;width: 20rem;">
+            <div class="box">
+                <div class="head">
+                    <h3>INSTRUCTIONS:</h3>
+                </div>
+                <div class="boxBody">
+                    1. Click on the Block A at the Ledger and then click on Node A Node B and Node C.<br><br>
+                    2. Now click the "Validate" buton.<br><br>
+                    3. A popup shows a message "Vlaid!".<br><br>
+                    4. Now do the same for Block B.<br><br>
+                    5. Click on "Validate" button. A message will display saying "Valid!".<br><br>
+                    6. Therefore the blocks from the Ledger are thus distributed among all the nodes i.e Node
+                    A, Node
+                    B and
+                    Node C.
+                </div>
+            </div>
+        </div>
+        <div style="position: relative;" id="targz">
+            <canvas id="dis" width="550" height="720"></canvas>
+            <div style="position: absolute; bottom:2%;left:50%;transform:translateX(-50%)">
+                <button onclick="validate()" class="butt">Validate</button>
+                <button onclick="reset()" class="butt">Reset</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="toastArea"></div>
+    <script src="../js/animation.ob.js"> </script>
+    <script>
+        //@author: Simran Singh (simran.singh2198@gmail.com)
+        function hasClass(el, className) {
+            if (el.classList)
+                return el.classList.contains(className);
+            return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+        }
+        function addClass(el, className) {
+            if (el.classList)
+                el.classList.add(className)
+            else if (!hasClass(el, className))
+                el.className += " " + className;
+        }
+        function removeClass(el, className) {
+            if (el.classList)
+                el.classList.remove(className)
+            else if (hasClass(el, className)) {
+                var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+                el.className = el.className.replace(reg, ' ');
+            }
+        }
+
+        let tos = 0, tarea = document.getElementById("toastArea");
+
+        function malert(msg, type = 0) {
+            let tc = type == 0 ? "" : (type == 1 ? " success" : " danger");
+            tarea.insertAdjacentHTML("afterbegin", `<div class="toast${tc}" id="t${tos}">
+            <div class="toast-head">
+                <b>#${tos + 1}</b>&nbsp;Notification
+                <button class="toast-but" data-ind="${tos}">&#10006;</button>
+            </div>
+            <div class="toast-body">
+                ${msg}
+            </div>
+            </div>`);
+            addClass(document.getElementById("t" + tos), "show");
+            tos++;
+        }
+        document.body.onclick = function (e) {
+            if (window.event) {
+                e = event.srcElement;
+            }
+            else {
+                e = e.target;
+            }
+            if (e.className && e.className.indexOf('toast-but') != -1) {
+                removeClass(document.getElementById("t" + e.getAttribute('data-ind')), 'show');
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function (event) {
+            tarea.style.top = (window.scrollY + document.querySelector('#targz').getBoundingClientRect().top) + "px"
+        });
+
+        const BLOCK_WIDTH = 150;
+
+        class Trans {
+            //transactions class
+            constructor(from, to, amount) {
+                Object.assign(this, { from, to, amount });
+            }
+        }
+
+        class Block {
+            //blocks class
+            constructor(x, y, w, h, name, transacs = []) {
+                // transacs = array of transactions in the block, each item in array is object of class Trans               
+                Object.assign(this, { x, y, h, w, name, transacs });
+            }
+        }
+
+        class Node {
+            //you can also call this miner
+            constructor(x, y, w, h, name, blocks) {
+                Object.assign(this, { x, y, w, h, name, blocks });
+            }
+        }
+
+
+        var anim = new Animation("dis");
+        var canvas = anim.getCanvas();
+        var ctx = anim.getContext();
+        anim.setStage(animFrame);
+
+        function renderBlock(b, active = 0) {
+            let h = b.transacs.length ? b.transacs.length * 20 + 30 : b.h; // modifying height according to number of transactions in the block
+            if (active) ctx.strokeStyle = "#00FF00";
+            ctx.rect(b.x, b.y, b.w, h);//block box
+
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.strokeStyle = "#000000";
+
+            //block name: "Block A"
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(b.name, b.x + (b.w / 2), b.y + 10);
+
+            //line below "Block A"
+            ctx.moveTo(b.x, b.y + 17, 0);
+            ctx.lineTo(b.x + b.w, b.y + 17);
+
+            //font settings of transactions
+            ctx.font = "14px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#ff0000";
+            for (let i = 0; i < b.transacs.length; i++) {
+                let t = b.transacs[i];
+                ctx.fillText(t.from + "  -> " + t.to + "    Amount: " + t.amount, b.x + (b.w / 2), b.y + (i * 20) + 35);//writing transactions position calculated according to blocks x,y
+            }
+            ctx.stroke();
+        }
+
+        function renderNode(n) {
+            ctx.beginPath();
+            ctx.rect(n.x, n.y, n.w, n.h);//the main box of node
+
+            //name of node: "Node A"
+            ctx.font = "20px Georgia";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#000000";
+            ctx.fillText(n.name, n.x + (n.w / 2), n.y + 15);
+
+            //the line under "Node A"
+            ctx.moveTo(n.x, n.y + 27, 0);
+            ctx.lineTo(n.x + n.w, n.y + 27);
+
+            for (let i = 0; i < n.blocks.length; i++) {
+                //looping through blocks in the node
+                //manipulating block position in each node:
+                n.blocks[i].x = n.x + 10 + i * (BLOCK_WIDTH + 10);
+                n.blocks[i].y = n.y + 40;
+                renderBlock(n.blocks[i]);
+            }
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+
+        // ================================== YOU JUST NEED TO LOOK AT THIS CODE =========================================
+        let active = -1;
+
+        let t = [
+            new Trans("A", "B", 10),
+            new Trans("B", "C", 20),
+            new Trans("B", "C", 20),
+        ];
+
+        let nodes = [
+            new Node(30, 150, (BLOCK_WIDTH * 3) + 40, 150, "Node A", []),
+            new Node(30, 330, (BLOCK_WIDTH * 3) + 40, 150, "Node B", []),
+            new Node(30, 510, (BLOCK_WIDTH * 3) + 40, 150, "Node C", [])
+        ];
+
+        let blks = [
+            new Block(35, 25, BLOCK_WIDTH, 70, "Block A", t),
+            new Block(200, 25, BLOCK_WIDTH, 70, "Block B", t),
+            new Block(365, 25, BLOCK_WIDTH, 70, "Block C", t)
+        ]
+
+        function renderScene() {
+            //render whole scene
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // lets clear canvas before drawing
+            ctx.beginPath();
+
+            for (let i = 0; i < blks.length; i++)
+                renderBlock(blks[i], active == i ? 1 : 0);
+
+            for (let i = 0; i < nodes.length; i++) {
+                //lets render our nodes now :D
+                renderNode(nodes[i]);
+            }
+
+        }
+
+        let ac = 0, maxAc, animNum = -1;//animation counter
+        function animFrame() {
+            // called in each frame of animation when it is active
+            // anim.start() and anim.stop() to start and stop
+
+            renderScene();//render our fixed scene in each animation frame
+
+            let mvx, mvy;
+
+            switch (animNum) {
+                //only one anim code will be executed based on animNum, set it before anim.start()
+
+            }
+            if (ac == maxAc) {
+                animNum = - 1;
+                anim.stop();
+                renderScene();
+            }
+            ac++;
+        }
+
+        function mouseevt(x, y) {
+            for (let i = 0; i < blks.length; i++) {
+                b = blks[i];
+                let h = b.transacs.length ? b.transacs.length * 20 + 30 : b.h; // modifying height according to number of transactions in the block
+                if (x >= b.x && x <= b.x + BLOCK_WIDTH && y >= b.y && y <= b.y + h) {
+                    active = i;
+                    renderScene();
+                    break;
+                }
+            }
+            for (let i = 0; i < nodes.length; i++) {
+                let n = nodes[i];
+                if (x >= n.x && x <= n.x + (BLOCK_WIDTH * 3) + 40 && y >= n.y && y <= n.y + 150) {
+                    console.log(n.name);
+                    if (active != -1) {
+                        for (let j = 0; j < n.blocks.length; j++) {
+                            if (n.blocks[j].name == blks[active].name) {
+                                malert("Cant insert same block twice in same node", 2);
+                                return;
+                            }
+                        }
+                        let copyBlock = JSON.parse(JSON.stringify(blks[active])); //we need to copy block before pusing into array
+                        nodes[i].blocks.push(copyBlock);//pushing our new block to the node.blocks array     
+                        active = -1;
+                        renderScene();
+                        break;
+                    }
+                }
+            }
+        }
+
+        function validate() {
+            if (nodes[0].blocks.length != nodes[1].blocks.length || nodes[0].blocks.length != nodes[2].blocks.length) {
+                malert("Different number of blocks in nodes, invalid!", 2);
+                return;
+            }
+            for (let i = 0; i < nodes[0].blocks.length; i++) {
+                if (nodes[0].blocks[i].name != nodes[1].blocks[i].name || nodes[0].blocks[i].name != nodes[2].blocks[i].name) {
+                    malert("Order of blocks is different, invalid", 2);
+                    return;
+                }
+            }
+            malert("Valid!", 1);
+        }
+
+        function reset() {
+            for (let i = 0; i < nodes.length; i++) {
+                nodes[i].blocks = [];
+            }
+            active = -1;
+            renderScene();
+        }
+
+        renderScene();
+    </script>
+    <script src="../js/mouseevent.ob.js"></script>
+</body>
+
+</html>
